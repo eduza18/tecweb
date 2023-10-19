@@ -1,5 +1,6 @@
 // JSON BASE A MOSTRAR EN FORMULARIO
 var baseJSON = {
+    "nombre": "NA",
     "precio": 0.0,
     "unidades": 1,
     "modelo": "XX-000",
@@ -10,17 +11,9 @@ var baseJSON = {
 
 // FUNCIÓN CALLBACK DE BOTÓN "Buscar"
 function buscarID(e) {
-    /**
-     * Revisar la siguiente información para entender porqué usar event.preventDefault();
-     * http://qbit.com.mx/blog/2013/01/07/la-diferencia-entre-return-false-preventdefault-y-stoppropagation-en-jquery/#:~:text=PreventDefault()%20se%20utiliza%20para,escuche%20a%20trav%C3%A9s%20del%20DOM
-     * https://www.geeksforgeeks.org/when-to-use-preventdefault-vs-return-false-in-javascript/
-     */
     e.preventDefault();
-
-    // SE OBTIENE EL NOMBRE A BUSCAR
     var nombre = document.getElementById('search').value;
 
-    // SE CREA EL OBJETO DE CONEXIÓN ASÍNCRONA AL SERVIDOR
     var client = getXMLHttpRequest();
     client.open('POST', './backend/read.php', true);
     client.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -34,7 +27,7 @@ function buscarID(e) {
                 let template = '';
 
                 productos.forEach(function(producto) {
-                    let descripcion = '';
+                    let descripcion = '<li>nombre: ' + producto.nombre + '</li>';
                     descripcion += '<li>precio: ' + producto.precio + '</li>';
                     descripcion += '<li>unidades: ' + producto.unidades + '</li>';
                     descripcion += '<li>modelo: ' + producto.modelo + '</li>';
@@ -44,7 +37,6 @@ function buscarID(e) {
                     template += `
                         <tr>
                             <td>${producto.id}</td>
-                            <td>${producto.nombre}</td>
                             <td><ul>${descripcion}</ul></td>
                         </tr>
                     `;
@@ -59,15 +51,12 @@ function buscarID(e) {
     client.send("nombre=" + nombre); 
 }
 
-
-
 // FUNCIÓN CALLBACK DE BOTÓN "Agregar Producto"
 function agregarProducto(e) {
     e.preventDefault();
 
     var productoJsonString = document.getElementById('description').value;
     var finalJSON = JSON.parse(productoJsonString);
-    finalJSON['nombre'] = document.getElementById('name').value;
     productoJsonString = JSON.stringify(finalJSON, null, 2);
 
     var client = getXMLHttpRequest();
